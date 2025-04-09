@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import MessageCard from './MessageCard';
+import UserProfileCard from './UserProfileCard';
 
 function SearchBar() {
   const { register, handleSubmit } = useForm();
@@ -8,6 +9,8 @@ function SearchBar() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [searchType, setSearchType] = useState(null); // 'profile' or 'repos'
   const [showOptions, setShowOptions] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+  const [data, setData] = useState(null);
 
   const handleResetState = () => {
     setShowError(false);
@@ -37,11 +40,15 @@ function SearchBar() {
       }
 
       const result = await response.json();
-      console.log(`#### Result for ${searchType}:`, result);
+      setData(result);
     } catch (error) {
       console.error('Failed to fetch profile:', error.message);
     }
   };
+
+  useEffect(() => {
+    setUserProfile(data);
+  }, [data]);
 
   return (
     <div className="relative">
@@ -51,7 +58,6 @@ function SearchBar() {
         type="error"
         handleReset={handleResetState}
       />
-
       <form
         onSubmit={handleSubmit(fetchSearchResults)}
         className="max-w-md mx-auto"
@@ -65,7 +71,7 @@ function SearchBar() {
             id="default-search"
             name="searchUser"
             placeholder="Search GitHub profiles or repositories..."
-            className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full p-4 ps-10 text-sm text-gray-900 border-[1px] border-gray-300 rounded-lg bg-gray-50 focus:border-transparent focus:ring-0 focus:border-[1px]"
             {...register('searchUser', {
               required: 'Please enter a username.'
             })}
@@ -80,17 +86,17 @@ function SearchBar() {
           </button>
 
           {showOptions && (
-            <div className="absolute font-light text-sm z-10 right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg">
+            <div className="absolute font-light text-sm z-10 right-0 mt-1 w-48 bg-white border border-gray-300 rounded-lg shadow-lg">
               <button
                 type="submit"
-                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                className="block w-full text-left text-brand-600 px-4 py-2 hover:bg-gray-100"
                 onClick={() => setSearchType('profile')}
               >
                 Search User Profile
               </button>
               <button
                 type="submit"
-                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                className="block w-full text-left px-4 text-brand-600 py-2 hover:bg-gray-100"
                 onClick={() => setSearchType('repos')}
               >
                 Search Repositories
@@ -99,6 +105,9 @@ function SearchBar() {
           )}
         </div>
       </form>
+      {userProfile && searchType === 'profile' && (
+        <UserProfileCard user={userProfile} />
+      )}{' '}
     </div>
   );
 }
