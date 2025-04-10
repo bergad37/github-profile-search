@@ -1,12 +1,48 @@
-# React + Vite
+# 🔍 GitHub Profile & Repo Search Tool
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based internal tool designed to help recruiters at HR tech companies quickly search and preview GitHub profiles or repositories using a GitHub username.
 
-Currently, two official plugins are available:
+## 🌐 Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+👉 [View App on Netlify](https://searchgithubprofileapp.netlify.app/)  
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 📌 About the App
+
+Recruiters often need to evaluate candidates' technical capabilities. Instead of opening GitHub manually for every candidate, this internal web tool allows recruiters to:
+
+- 🔎 **Search GitHub profiles** by username  
+- 📂 **View public repositories** of the candidate  
+- 📄 **Preview key details** like bio, followers, languages, and repo stats  
+- ⚡ **Streamline candidate screening** by saving time and improving productivity  
+
+Ideal for quick tech screening, especially in fast-paced hiring cycles.
+
+---
+
+## 🚀 Features
+
+- ✅ Instant search by GitHub username
+- ✅ Clean UI for profile and repo summaries
+- ✅ Highlights important GitHub metrics
+- ✅ Mobile-responsive design
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React (Vite or Create React App)
+- **API:** GitHub REST API
+- **Deployment:** Netlify
+
+---
+
+## 📸 Screenshots
+
+> *(Add screenshots of the profile search page and repo list preview here)*  
+> Drag and drop `.png` or `.jpg` images or embed image links like below:
+
+```markdown
+![Profile Preview](./screenshots/profile-preview.png)
+![Repo List](./screenshots/repo-list.png)
