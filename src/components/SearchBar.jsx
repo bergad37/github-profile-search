@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import MessageCard from './MessageCard';
 import UserProfileCard from './UserProfileCard';
+import RepoListCard from './RepositoryListCard';
 
 function SearchBar() {
   const { register, handleSubmit } = useForm();
@@ -25,24 +26,39 @@ function SearchBar() {
       return;
     }
 
+    const username = params.searchUser.trim();
     const endpoint =
       searchType === 'profile'
-        ? `https://api.github.com/users/${params.searchUser}`
-        : `https://api.github.com/users/${params.searchUser}/repos`;
+        ? `https://api.github.com/users/${username}`
+        : `https://api.github.com/users/${username}/repos`;
 
     try {
-      const response = await fetch(endpoint, { method: 'GET' });
+      const response = await fetch(endpoint);
 
       if (!response.ok) {
         setShowError(true);
-        setErrorMessage(response.statusText);
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
+        setErrorMessage('User not found or error fetching data.');
+        setData(null);
+        return;
       }
 
       const result = await response.json();
-      setData(result);
+
+      if (searchType === 'repos') {
+        // Sort by stars and limit to top 5
+        const sorted = result
+          .sort((a, b) => b.stargazers_count - a.stargazers_count)
+          .slice(0, 5);
+        setData(sorted);
+      } else {
+        setData(result);
+      }
+
+      setShowError(false);
     } catch (error) {
-      console.error('Failed to fetch profile:', error.message);
+      console.error('Failed to fetch data:', error.message);
+      setShowError(true);
+      setErrorMessage('Something went wrong. Try again later.');
     }
   };
 
@@ -79,27 +95,28 @@ function SearchBar() {
 
           <button
             type="button"
-            className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2"
+            className=" flex text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2"
             onClick={() => setShowOptions(!showOptions)}
           >
-            Search
+            <p>Search</p>
+            {/* <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white" /> */}
           </button>
 
           {showOptions && (
             <div className="absolute font-light text-sm z-10 right-0 mt-1 w-48 bg-white border border-gray-300 rounded-lg shadow-lg">
               <button
                 type="submit"
-                className="block w-full text-left text-brand-600 px-4 py-2 hover:bg-gray-100"
+                className="flex w-full text-left text-brand-600 px-4 py-2 hover:bg-gray-100 space-x-2"
                 onClick={() => setSearchType('profile')}
               >
-                Search User Profile
+                <p> Search User Profile </p>
               </button>
               <button
                 type="submit"
                 className="block w-full text-left px-4 text-brand-600 py-2 hover:bg-gray-100"
                 onClick={() => setSearchType('repos')}
               >
-                Search Repositories
+                <p> Search Repositories</p>
               </button>
             </div>
           )}
@@ -108,6 +125,7 @@ function SearchBar() {
       {userProfile && searchType === 'profile' && (
         <UserProfileCard user={userProfile} />
       )}{' '}
+      {searchType === 'repos' && data && <RepoListCard repos={data} />}
     </div>
   );
 }
